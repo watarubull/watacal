@@ -105,10 +105,10 @@ const CustomFoodManager = ({ isOpen, onClose, onFoodSelect }) => {
 		setEditingFood(food);
 		setFormData({
 			name: food.name,
-			calories: food.calories.toString(),
-			protein: food.protein.toString(),
-			fat: food.fat.toString(),
-			carbohydrate: food.carbohydrate.toString(),
+			calories: (food.calories || 0).toString(),
+			protein: (food.protein || 0).toString(),
+			fat: (food.fat || 0).toString(),
+			carbohydrate: (food.carbohydrate || 0).toString(),
 			description: food.description || "",
 		});
 		setShowAddForm(true);

@@ -68,24 +68,36 @@ export const calculateNutritionFromAPI = (food, grams) => {
 
 // カスタム食材用の栄養成分計算
 export const calculateCustomNutrition = (food, grams) => {
-	if (
-		!food ||
-		!food.calories ||
-		!food.protein ||
-		!food.fat ||
-		!food.carbohydrate
-	) {
+	console.log("calculateCustomNutrition called with:", { food, grams });
+
+	if (!food) {
+		console.log("calculateCustomNutrition: food is null or undefined");
 		return null;
 	}
 
-	const ratio = grams / 100;
+	// 不足している栄養素フィールドを0として扱う（0の場合も考慮）
+	const calories =
+		food.calories !== undefined && food.calories !== null ? food.calories : 0;
+	const protein =
+		food.protein !== undefined && food.protein !== null ? food.protein : 0;
+	const fat = food.fat !== undefined && food.fat !== null ? food.fat : 0;
+	const carbohydrate =
+		food.carbohydrate !== undefined && food.carbohydrate !== null
+			? food.carbohydrate
+			: 0;
 
-	return {
-		calories: Math.round(food.calories * ratio),
-		protein: Math.round(food.protein * ratio * 10) / 10,
-		fat: Math.round(food.fat * ratio * 10) / 10,
-		carbohydrate: Math.round(food.carbohydrate * ratio * 10) / 10,
+	console.log("Nutrition values:", { calories, protein, fat, carbohydrate });
+
+	const ratio = grams / 100;
+	const result = {
+		calories: Math.round(calories * ratio),
+		protein: Math.round(protein * ratio * 10) / 10,
+		fat: Math.round(fat * ratio * 10) / 10,
+		carbohydrate: Math.round(carbohydrate * ratio * 10) / 10,
 	};
+
+	console.log("calculateCustomNutrition result:", result);
+	return result;
 };
 
 // フォールバック用のローカル検索（既存のfoodDatabaseを使用）

@@ -148,12 +148,15 @@ const NutritionTracker = () => {
 		}
 
 		let nutrition;
+		console.log("Selected food for calculation:", selectedFood);
 		if (selectedFood.isCustom) {
+			console.log("Calculating custom nutrition for:", selectedFood);
 			nutrition = calculateCustomNutrition(
 				selectedFood,
 				parseFloat(foodAmount)
 			);
 		} else {
+			console.log("Calculating API nutrition for:", selectedFood);
 			nutrition = calculateNutritionFromAPI(
 				selectedFood,
 				parseFloat(foodAmount)
@@ -204,12 +207,15 @@ const NutritionTracker = () => {
 		}
 
 		let nutrition;
+		console.log("Selected food for edit calculation:", selectedFood);
 		if (selectedFood.isCustom) {
+			console.log("Calculating custom nutrition for edit:", selectedFood);
 			nutrition = calculateCustomNutrition(
 				selectedFood,
 				parseFloat(foodAmount)
 			);
 		} else {
+			console.log("Calculating API nutrition for edit:", selectedFood);
 			nutrition = calculateNutritionFromAPI(
 				selectedFood,
 				parseFloat(foodAmount)
@@ -265,7 +271,23 @@ const NutritionTracker = () => {
 
 	const handleStartEdit = (meal) => {
 		setEditingMeal(meal);
-		setSelectedFood({ name: meal.foodName });
+		console.log("Editing meal:", meal);
+
+		// 食事データから食材オブジェクトを再構築
+		const foodObject = {
+			name: meal.foodName,
+			// 100gあたりの栄養素を計算
+			calories: Math.round((meal.calories / meal.amount) * 100),
+			protein: Math.round((meal.protein / meal.amount) * 100 * 10) / 10,
+			fat: Math.round((meal.fat / meal.amount) * 100 * 10) / 10,
+			carbohydrate:
+				Math.round((meal.carbohydrate / meal.amount) * 100 * 10) / 10,
+			// カスタム食材かどうかを判定（APIデータにはper100gがある）
+			isCustom: !meal.per100g,
+		};
+
+		console.log("Reconstructed food object:", foodObject);
+		setSelectedFood(foodObject);
 		setFoodAmount(meal.amount.toString());
 		setSearchQuery(meal.foodName);
 		setShowEditForm(true);
@@ -273,6 +295,7 @@ const NutritionTracker = () => {
 	};
 
 	const handleCustomFoodSelect = (food) => {
+		console.log("Custom food selected:", food);
 		setSelectedFood(food);
 		setFoodAmount("");
 		setSearchQuery(food.name);
