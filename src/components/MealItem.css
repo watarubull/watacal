@@ -1,0 +1,113 @@
+.meal-item {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 20px;
+	margin-bottom: 15px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: all 0.2s ease;
+	position: relative;
+}
+
+.meal-item:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	transform: translateY(-1px);
+}
+
+.meal-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 15px;
+}
+
+.meal-main {
+	flex: 1;
+}
+
+.meal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.meal-name {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--black);
+}
+
+.meal-amount {
+	font-size: 14px;
+	color: var(--gray02);
+	background: var(--gray05);
+	padding: 4px 8px;
+	border-radius: 12px;
+}
+
+.meal-nutrition {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.nutrition-calories {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--colorYellow);
+}
+
+.nutrition-pfc {
+	display: flex;
+	gap: 12px;
+	font-size: 12px;
+	color: var(--gray02);
+}
+
+.pfc-items {
+	background: var(--gray05);
+	padding: 4px 8px;
+	border-radius: 8px;
+	font-weight: 500;
+}
+
+.meal-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.meal-actions .btn {
+	padding: 8px 16px;
+	font-size: 12px;
+	min-width: 60px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 480px) {
+	.meal-item {
+		padding: 15px;
+	}
+
+	.meal-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 5px;
+	}
+
+	.nutrition-pfc {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.meal-actions {
+		flex-direction: row;
+		gap: 6px;
+	}
+
+	.meal-actions .btn {
+		padding: 6px 12px;
+		font-size: 11px;
+		min-width: 50px;
+	}
+}

@@ -1,0 +1,275 @@
+.weight-tracker {
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.weight-tracker h2 {
+	color: var(--black);
+	margin-bottom: 10px;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.date-display {
+	text-align: center;
+	color: var(--gray03);
+	margin-bottom: 30px;
+	font-size: 16px;
+}
+
+/* 日付ナビゲーション */
+.date-navigation {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-bottom: 20px;
+}
+
+.date-input {
+	padding: 10px 16px;
+	border: 2px solid var(--gray04);
+	border-radius: 8px;
+	font-size: 16px;
+	background: var(--white);
+	color: var(--black);
+	transition: border-color 0.3s ease;
+	min-width: 140px;
+}
+
+.date-input:focus {
+	outline: none;
+	border-color: var(--colorYellow);
+}
+
+.date-nav-arrow {
+	background: none;
+	border: none;
+	font-size: 18px;
+	color: var(--gray02);
+	cursor: pointer;
+	padding: 8px;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.date-nav-arrow:hover {
+	color: var(--black);
+	background: var(--gray05);
+}
+
+.today-weight {
+	margin-bottom: 30px;
+}
+
+.weight-card {
+	background: var(--white);
+	padding: 25px;
+	border-radius: 12px;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+.weight-card h3 {
+	margin-bottom: 20px;
+	color: var(--black);
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.weight-display {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: 8px;
+}
+
+.weight-value {
+	font-size: 48px;
+	font-weight: 700;
+	color: var(--colorYellow);
+}
+
+.weight-unit {
+	font-size: 20px;
+	color: var(--gray02);
+	font-weight: 500;
+}
+
+.no-weight {
+	padding: 40px 0;
+}
+
+.no-weight p {
+	color: var(--gray03);
+	margin-bottom: 20px;
+	font-style: italic;
+}
+
+.weight-change {
+	background: var(--white);
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+.weight-change h4 {
+	margin-bottom: 15px;
+	color: var(--black);
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.change-value {
+	font-size: 24px;
+	font-weight: 700;
+}
+
+.change-value.increase {
+	color: var(--colorRed);
+}
+
+.change-value.decrease {
+	color: var(--colorGreen);
+}
+
+.add-weight-btn {
+	width: 100%;
+	margin-bottom: 30px;
+	padding: 16px;
+	font-size: 18px;
+}
+
+/* モーダルスタイル */
+.add-weight-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 20px;
+}
+
+.modal-content {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 30px;
+	width: 100%;
+	max-width: 500px;
+	max-height: 80vh;
+	overflow-y: auto;
+}
+
+.modal-content h3 {
+	margin-bottom: 25px;
+	color: var(--black);
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.modal-buttons {
+	display: flex;
+	gap: 15px;
+	margin-top: 25px;
+}
+
+.modal-buttons .btn {
+	flex: 1;
+}
+
+/* 体重履歴 */
+.weight-history {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 25px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.weight-history h3 {
+	margin-bottom: 20px;
+	color: var(--black);
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.no-history {
+	text-align: center;
+	color: var(--gray03);
+	font-style: italic;
+	padding: 40px 0;
+}
+
+.history-list {
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.history-item {
+	padding: 15px 0;
+	border-bottom: 1px solid var(--gray05);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.history-item:last-child {
+	border-bottom: none;
+}
+
+.history-date {
+	color: var(--gray02);
+	font-size: 14px;
+}
+
+.history-weight {
+	font-weight: 600;
+	color: var(--black);
+	font-size: 16px;
+}
+
+@media (max-width: 480px) {
+	.weight-tracker {
+		padding: 15px;
+	}
+
+	.modal-content {
+		padding: 20px;
+	}
+
+	.modal-buttons {
+		flex-direction: column;
+	}
+
+	.weight-value {
+		font-size: 36px;
+	}
+
+	.change-value {
+		font-size: 20px;
+	}
+
+	.date-navigation {
+		gap: 6px;
+	}
+
+	.date-input {
+		padding: 8px 12px;
+		font-size: 14px;
+		min-width: 120px;
+	}
+
+	.date-nav-arrow {
+		font-size: 16px;
+		padding: 6px;
+	}
+}

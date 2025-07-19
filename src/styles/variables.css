@@ -1,0 +1,15 @@
+:root {
+	--black: #131313;
+	--white: #fefefe;
+	--whiteClear: rgba(255, 255, 255, 0.5);
+	--gray01: #1a1a1a;
+	--gray02: #333333;
+	--gray03: #808080;
+	--gray04: #cccccc;
+	--gray05: #f2f2f2;
+	--colorYellow: #fcc721;
+	--colorYellow02: #ffe699;
+	--colorOrange: #fc8021;
+	--colorGreen: #39c181;
+	--colorRed: #fc4221;
+}

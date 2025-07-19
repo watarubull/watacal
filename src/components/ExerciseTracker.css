@@ -1,0 +1,355 @@
+.exercise-tracker {
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.exercise-tracker h2 {
+	color: var(--black);
+	margin-bottom: 10px;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.date-display {
+	text-align: center;
+	color: var(--gray03);
+	margin-bottom: 30px;
+	font-size: 16px;
+}
+
+/* 日付ナビゲーション */
+.date-navigation {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-bottom: 20px;
+}
+
+.date-input {
+	padding: 10px 16px;
+	border: 2px solid var(--gray04);
+	border-radius: 8px;
+	font-size: 16px;
+	background: var(--white);
+	color: var(--black);
+	transition: border-color 0.3s ease;
+	min-width: 140px;
+}
+
+.date-input:focus {
+	outline: none;
+	border-color: var(--colorYellow);
+}
+
+.date-nav-arrow {
+	background: none;
+	border: none;
+	font-size: 18px;
+	color: var(--gray02);
+	cursor: pointer;
+	padding: 8px;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.date-nav-arrow:hover {
+	color: var(--black);
+	background: var(--gray05);
+}
+
+.exercise-summary {
+	margin-bottom: 30px;
+}
+
+.summary-card {
+	background: var(--white);
+	padding: 25px;
+	border-radius: 12px;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+.summary-card h3 {
+	margin-bottom: 15px;
+	color: var(--black);
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.total-calories {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: 8px;
+}
+
+.calories-value {
+	font-size: 36px;
+	font-weight: 700;
+	color: var(--colorGreen);
+}
+
+.calories-unit {
+	font-size: 18px;
+	color: var(--gray02);
+	font-weight: 500;
+}
+
+.exercise-types {
+	display: grid;
+	gap: 15px;
+}
+
+.exercise-type-card {
+	background: var(--white);
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.exercise-type-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 15px;
+}
+
+.exercise-icon {
+	font-size: 24px;
+}
+
+.exercise-title {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--black);
+}
+
+.exercise-stats {
+	display: grid;
+	gap: 10px;
+}
+
+.stat-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--gray05);
+}
+
+.stat-item:last-child {
+	border-bottom: none;
+}
+
+.stat-label {
+	color: var(--gray02);
+	font-size: 14px;
+}
+
+.stat-value {
+	font-weight: 600;
+	color: var(--black);
+	font-size: 16px;
+}
+
+.add-exercise-btn {
+	width: 100%;
+	margin-bottom: 30px;
+	padding: 16px;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+/* モーダルスタイル */
+.add-exercise-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 20px;
+}
+
+.modal-content {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 30px;
+	width: 100%;
+	max-width: 500px;
+	max-height: 80vh;
+	overflow-y: auto;
+}
+
+.modal-content h3 {
+	margin-bottom: 25px;
+	color: var(--black);
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.calories-preview {
+	background: var(--gray05);
+	padding: 20px;
+	border-radius: 8px;
+	margin: 20px 0;
+	text-align: center;
+}
+
+.calories-preview h4 {
+	margin-bottom: 10px;
+	color: var(--black);
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.calories-preview-value {
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--colorGreen);
+}
+
+.modal-buttons {
+	display: flex;
+	gap: 15px;
+	margin-top: 25px;
+}
+
+.modal-buttons .btn {
+	flex: 1;
+}
+
+/* 運動リスト */
+.exercises-list {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 25px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.exercises-list h3 {
+	margin-bottom: 20px;
+	color: var(--black);
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.no-exercises {
+	text-align: center;
+	color: var(--gray03);
+	font-style: italic;
+	padding: 40px 0;
+}
+
+.exercise-item {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 20px;
+	margin-bottom: 15px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: all 0.2s ease;
+}
+
+.exercise-item:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	transform: translateY(-1px);
+}
+
+.exercise-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 15px;
+}
+
+.exercise-main {
+	flex: 1;
+}
+
+.exercise-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.exercise-type {
+	font-weight: 600;
+	color: var(--black);
+	font-size: 16px;
+}
+
+.exercise-value {
+	font-size: 14px;
+	color: var(--gray02);
+	background: var(--gray05);
+	padding: 4px 8px;
+	border-radius: 12px;
+}
+
+.exercise-calories {
+	font-weight: 600;
+	color: var(--colorGreen);
+	font-size: 16px;
+}
+
+.exercise-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.exercise-actions .btn {
+	padding: 10px 16px;
+	font-size: 14px;
+	font-weight: 500;
+	min-width: 60px;
+}
+
+@media (max-width: 480px) {
+	.exercise-tracker {
+		padding: 15px;
+	}
+
+	.modal-content {
+		padding: 20px;
+	}
+
+	.modal-buttons {
+		flex-direction: column;
+	}
+
+	.calories-value {
+		font-size: 28px;
+	}
+
+	.exercise-type-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	}
+
+	.date-navigation {
+		gap: 6px;
+	}
+
+	.date-input {
+		padding: 8px 12px;
+		font-size: 14px;
+		min-width: 120px;
+	}
+
+	.date-nav-arrow {
+		font-size: 16px;
+		padding: 6px;
+	}
+}

@@ -1,0 +1,373 @@
+.nutrition-tracker {
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.nutrition-tracker h2 {
+	color: var(--black);
+	margin-bottom: 10px;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.date-navigation {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-bottom: 20px;
+}
+
+.date-input {
+	padding: 10px 16px;
+	border: 2px solid var(--gray04);
+	border-radius: 8px;
+	font-size: 16px;
+	background: var(--white);
+	color: var(--black);
+	transition: border-color 0.3s ease;
+	min-width: 140px;
+}
+
+.date-input:focus {
+	outline: none;
+	border-color: var(--colorYellow);
+}
+
+.date-nav-arrow {
+	background: none;
+	border: none;
+	font-size: 18px;
+	color: var(--gray02);
+	cursor: pointer;
+	padding: 8px;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.date-nav-arrow:hover {
+	color: var(--black);
+	background: var(--gray05);
+}
+
+.navigation-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 15px;
+	margin-bottom: 25px;
+}
+
+.nav-btn {
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.date-display {
+	text-align: center;
+	color: var(--gray03);
+	margin-bottom: 30px;
+	font-size: 16px;
+}
+
+.nutrition-summary {
+	margin-bottom: 30px;
+}
+
+.summary-card {
+	background: var(--white);
+	padding: 25px;
+	border-radius: 12px;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card h3 {
+	margin-bottom: 15px;
+	color: var(--black);
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.progress-container {
+	margin-bottom: 15px;
+}
+
+.progress-bar {
+	width: 100%;
+	height: 12px;
+	background: var(--gray05);
+	border-radius: 6px;
+	overflow: hidden;
+	margin-bottom: 8px;
+}
+
+.progress-fill {
+	height: 100%;
+	transition: width 0.3s ease;
+}
+
+.progress-text {
+	text-align: center;
+	font-weight: 600;
+	color: var(--black);
+	font-size: 16px;
+}
+
+.pfc-grid {
+	display: grid;
+	gap: 15px;
+}
+
+.pfc-item {
+	background: var(--white);
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pfc-label {
+	display: block;
+	font-size: 14px;
+	color: var(--gray02);
+	margin-bottom: 8px;
+	font-weight: 500;
+}
+
+.pfc-value {
+	display: block;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--black);
+	margin-bottom: 10px;
+}
+
+.pfc-progress {
+	width: 100%;
+	height: 8px;
+	background: var(--gray05);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.pfc-progress-fill {
+	height: 100%;
+	transition: width 0.3s ease;
+}
+
+.add-meal-btn {
+	width: 100%;
+	margin-bottom: 30px;
+	padding: 16px;
+	font-size: 18px;
+}
+
+/* モーダルスタイル */
+.add-meal-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 20px;
+}
+
+.modal-content {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 30px;
+	width: 100%;
+	max-width: 500px;
+	max-height: 80vh;
+	overflow-y: auto;
+}
+
+.modal-content h3 {
+	margin-bottom: 25px;
+	color: var(--black);
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.search-results {
+	max-height: 200px;
+	overflow-y: auto;
+	border: 2px solid var(--gray04);
+	border-radius: 8px;
+	margin-top: 5px;
+}
+
+.search-result-item {
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--gray05);
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	transition: background-color 0.2s ease;
+}
+
+.search-result-item:hover {
+	background: var(--gray05);
+}
+
+.search-result-item:last-child {
+	border-bottom: none;
+}
+
+.food-name {
+	font-weight: 500;
+	color: var(--black);
+}
+
+.food-calories {
+	font-size: 12px;
+	color: var(--gray03);
+}
+
+.nutrition-preview {
+	background: var(--gray05);
+	padding: 20px;
+	border-radius: 8px;
+	margin: 20px 0;
+}
+
+.nutrition-preview h4 {
+	margin-bottom: 15px;
+	color: var(--black);
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.nutrition-preview-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 15px;
+}
+
+.preview-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--gray04);
+}
+
+.preview-item:last-child {
+	border-bottom: none;
+}
+
+.preview-item span:first-child {
+	color: var(--gray02);
+	font-size: 14px;
+}
+
+.preview-item span:last-child {
+	font-weight: 600;
+	color: var(--black);
+}
+
+.modal-buttons {
+	display: flex;
+	gap: 15px;
+	margin-top: 25px;
+}
+
+.modal-buttons .btn {
+	flex: 1;
+}
+
+/* 食事リスト */
+.meals-list {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 25px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.meals-list h3 {
+	margin-bottom: 20px;
+	color: var(--black);
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.no-meals {
+	text-align: center;
+	color: var(--gray03);
+	font-style: italic;
+	padding: 40px 0;
+}
+
+.search-container {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.search-container .form-control {
+	flex: 1;
+}
+
+.custom-food-btn {
+	padding: 10px 15px;
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.food-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.custom-badge {
+	background: var(--colorBlue);
+	color: var(--white);
+	font-size: 10px;
+	padding: 2px 6px;
+	border-radius: 10px;
+	margin-left: 8px;
+	font-weight: normal;
+}
+
+@media (max-width: 480px) {
+	.nutrition-tracker {
+		padding: 15px;
+	}
+
+	.modal-content {
+		padding: 20px;
+	}
+
+	.nutrition-preview-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.modal-buttons {
+		flex-direction: column;
+	}
+
+	.date-navigation {
+		gap: 6px;
+	}
+
+	.date-input {
+		padding: 8px 12px;
+		font-size: 14px;
+		min-width: 120px;
+	}
+
+	.date-nav-arrow {
+		font-size: 16px;
+		padding: 6px;
+	}
+}
