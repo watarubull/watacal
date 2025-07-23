@@ -77,141 +77,133 @@ const WeeklySummary = ({ isOpen, onClose }) => {
 
 	return (
 		<div className="weekly-summary-content">
-			<div className="modal-content">
-				<div className="modal-header">
-					<h3>週間サマリー</h3>
-					<button className="close-btn" onClick={onClose}>
-						×
-					</button>
-				</div>
+			{loading ? (
+				<div className="loading">読み込み中...</div>
+			) : (
+				<div className="weekly-charts">
+					{/* カロリーグラフ */}
+					<div className="chart-section">
+						<h4>カロリー摂取量</h4>
+						<div className="chart-container">
+							{weeklyData.map((day, index) => {
+								const maxCalories = getMaxValue(weeklyData, "calories");
+								const percentage = (day.calories / maxCalories) * 100;
 
-				<div className="modal-body">
-					{loading ? (
-						<div className="loading">読み込み中...</div>
-					) : (
-						<div className="weekly-charts">
-							{/* カロリーグラフ */}
-							<div className="chart-section">
-								<h4>カロリー摂取量</h4>
-								<div className="chart-container">
-									{weeklyData.map((day, index) => {
-										const maxCalories = getMaxValue(weeklyData, "calories");
-										const percentage = (day.calories / maxCalories) * 100;
-
-										return (
-											<div key={index} className="chart-bar">
-												<div className="bar-label">
-													<span className="day-name">{day.dayOfWeek}</span>
-													<span className="day-date">{day.displayDate}</span>
-												</div>
-												<div className="bar-container">
-													<div
-														className="bar-fill"
-														style={{
-															height: `${percentage}%`,
-															backgroundColor: getProgressColor(percentage),
-														}}
-													></div>
-												</div>
-												<div className="bar-value">{day.calories} kcal</div>
-											</div>
-										);
-									})}
-								</div>
-							</div>
-
-							{/* PFCグラフ */}
-							<div className="chart-section">
-								<h4>PFC摂取量</h4>
-								<div className="pfc-chart">
-									{weeklyData.map((day, index) => (
-										<div key={index} className="pfc-day">
-											<div className="pfc-day-header">
-												<span className="day-name">{day.dayOfWeek}</span>
-												<span className="day-date">{day.displayDate}</span>
-											</div>
-											<div className="pfc-bars">
-												<div className="pfc-bar">
-													<span className="pfc-label">P</span>
-													<div
-														className="pfc-bar-fill"
-														style={{ width: `${(day.protein / 100) * 100}%` }}
-													></div>
-													<span className="pfc-value">
-														{day.protein.toFixed(1)}g
-													</span>
-												</div>
-												<div className="pfc-bar">
-													<span className="pfc-label">F</span>
-													<div
-														className="pfc-bar-fill"
-														style={{ width: `${(day.fat / 50) * 100}%` }}
-													></div>
-													<span className="pfc-value">
-														{day.fat.toFixed(1)}g
-													</span>
-												</div>
-												<div className="pfc-bar">
-													<span className="pfc-label">C</span>
-													<div
-														className="pfc-bar-fill"
-														style={{
-															width: `${(day.carbohydrate / 200) * 100}%`,
-														}}
-													></div>
-													<span className="pfc-value">
-														{day.carbohydrate.toFixed(1)}g
-													</span>
-												</div>
-											</div>
+								return (
+									<div key={index} className="chart-bar">
+										<div className="bar-label">
+											<span className="day-name">{day.dayOfWeek}</span>
+											<span className="day-date">{day.displayDate}</span>
 										</div>
-									))}
-								</div>
-							</div>
+										<div className="bar-container">
+											<div
+												className="bar-fill"
+												style={{
+													height: `${percentage}%`,
+													backgroundColor: getProgressColor(percentage),
+												}}
+											></div>
+										</div>
+										<div className="bar-value">{day.calories} kcal</div>
+									</div>
+								);
+							})}
+						</div>
+					</div>
 
-							{/* 週間統計 */}
-							<div className="weekly-stats">
-								<h4>週間統計</h4>
-								<div className="stats-grid">
-									<div className="stat-item">
-										<span className="stat-label">平均カロリー</span>
-										<span className="stat-value">
-											{Math.round(
-												weeklyData.reduce((sum, day) => sum + day.calories, 0) /
-													7
-											)}{" "}
-											kcal
-										</span>
-									</div>
-									<div className="stat-item">
-										<span className="stat-label">平均タンパク質</span>
-										<span className="stat-value">
-											{(
-												weeklyData.reduce((sum, day) => sum + day.protein, 0) /
-												7
-											).toFixed(1)}
-											g
-										</span>
-									</div>
-									<div className="stat-item">
-										<span className="stat-label">記録日数</span>
-										<span className="stat-value">
-											{weeklyData.filter((day) => day.mealCount > 0).length}日
-										</span>
-									</div>
-									<div className="stat-item">
-										<span className="stat-label">総食事数</span>
-										<span className="stat-value">
-											{weeklyData.reduce((sum, day) => sum + day.mealCount, 0)}
-											食
-										</span>
-									</div>
-								</div>
+					{/* 週間統計 */}
+					<div className="weekly-stats">
+						<h4>週間統計</h4>
+						<div className="stats-grid">
+							<div className="stat-item">
+								<span className="stat-label">平均カロリー</span>
+								<span className="stat-value">
+									{(() => {
+										const recordedDays = weeklyData.filter(
+											(day) => day.mealCount > 0
+										);
+										if (recordedDays.length === 0) return "0";
+										return Math.round(
+											recordedDays.reduce((sum, day) => sum + day.calories, 0) /
+												recordedDays.length
+										);
+									})()}{" "}
+									kcal
+								</span>
+							</div>
+							<div className="stat-item">
+								<span className="stat-label">平均タンパク質</span>
+								<span className="stat-value">
+									{(() => {
+										const recordedDays = weeklyData.filter(
+											(day) => day.mealCount > 0
+										);
+										if (recordedDays.length === 0) return "0.0";
+										return (
+											recordedDays.reduce((sum, day) => sum + day.protein, 0) /
+											recordedDays.length
+										).toFixed(1);
+									})()}
+									g
+								</span>
+							</div>
+							<div className="stat-item">
+								<span className="stat-label">記録日数</span>
+								<span className="stat-value">
+									{weeklyData.filter((day) => day.mealCount > 0).length}日
+								</span>
 							</div>
 						</div>
-					)}
+					</div>
+
+					{/* PFCグラフ */}
+					<div className="chart-section">
+						<h4>PFC摂取量</h4>
+						<div className="pfc-chart">
+							{weeklyData.map((day, index) => (
+								<div key={index} className="pfc-day">
+									<div className="pfc-day-header">
+										<span className="day-name">{day.dayOfWeek}</span>
+										<span className="day-date">{day.displayDate}</span>
+									</div>
+									<div className="pfc-bars">
+										<div className="pfc-bar">
+											<span className="pfc-label">P</span>
+											<div
+												className="pfc-bar-fill"
+												style={{ width: `${(day.protein / 100) * 100}%` }}
+											></div>
+											<span className="pfc-value">
+												{day.protein.toFixed(1)}g
+											</span>
+										</div>
+										<div className="pfc-bar">
+											<span className="pfc-label">F</span>
+											<div
+												className="pfc-bar-fill"
+												style={{ width: `${(day.fat / 50) * 100}%` }}
+											></div>
+											<span className="pfc-value">{day.fat.toFixed(1)}g</span>
+										</div>
+										<div className="pfc-bar">
+											<span className="pfc-label">C</span>
+											<div
+												className="pfc-bar-fill"
+												style={{
+													width: `${(day.carbohydrate / 200) * 100}%`,
+												}}
+											></div>
+											<span className="pfc-value">
+												{day.carbohydrate.toFixed(1)}g
+											</span>
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };

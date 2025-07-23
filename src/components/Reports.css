@@ -24,7 +24,7 @@
 .tab-btn {
 	flex: 1;
 	padding: 15px 20px;
-	background: none;
+	background: var(--gray04);
 	border: none;
 	font-size: 16px;
 	font-weight: 500;
@@ -41,7 +41,7 @@
 
 .tab-btn.active {
 	background: var(--white);
-	color: var(--colorBlue);
+	color: var(--colorYellow);
 	font-weight: 600;
 }
 
@@ -52,7 +52,49 @@
 	left: 0;
 	right: 0;
 	height: 2px;
-	background: var(--colorBlue);
+	background: var(--colorYellow);
+}
+
+/* 期間レポート */
+
+/* セレクトボックス横並び */
+.selectors-row {
+	display: flex;
+	gap: 15px;
+	margin-bottom: 20px;
+	align-items: center;
+}
+
+.selector-item {
+	flex: 1;
+	max-width: 200px;
+}
+
+/* 旧スタイルは削除 */
+.period-selector,
+.metrics-selector {
+	display: none;
+}
+
+.metrics-selector .form-control {
+	max-width: 300px;
+}
+
+/* グラフコンテナ */
+.chart-container {
+	background: var(--white);
+	border-radius: 12px;
+	padding: 25px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-top: 20px;
+}
+
+/* 期間レポート専用のグラフコンテナ */
+.period-chart-container {
+	background: var(--gray05);
+	border-radius: 12px;
+	margin-top: 0;
+	min-height: 450px;
 }
 
 /* レポートページ内のコンポーネントスタイルを調整 */
@@ -80,15 +122,6 @@
 .weekly-summary-content .modal-body,
 .meal-history-content .modal-body {
 	padding: 0;
-}
-
-.period-selector {
-	margin-bottom: 30px;
-}
-
-.period-selector .form-label {
-	margin-bottom: 10px;
-	display: block;
 }
 
 .loading {
@@ -152,13 +185,6 @@
 	color: var(--colorGreen);
 }
 
-.daily-reports {
-	background: var(--white);
-	border-radius: 12px;
-	padding: 25px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
 .daily-reports h3 {
 	margin-bottom: 20px;
 	color: var(--black);
@@ -176,13 +202,6 @@
 .reports-list {
 	display: grid;
 	gap: 15px;
-}
-
-.report-item {
-	background: var(--gray05);
-	border-radius: 8px;
-	padding: 20px;
-	border: 1px solid var(--gray04);
 }
 
 .report-header {
@@ -240,6 +259,27 @@
 	font-size: 14px;
 }
 
+@media (max-width: 768px) {
+	.reports {
+		max-width: 100%;
+		padding: 15px;
+	}
+
+	.tab-btn {
+		font-size: 12px;
+		padding: 12px 15px;
+	}
+
+	.selectors-row {
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.selector-item {
+		max-width: 100%;
+	}
+}
+
 @media (max-width: 480px) {
 	.reports {
 		padding: 15px;
@@ -257,5 +297,17 @@
 
 	.report-details {
 		grid-template-columns: 1fr;
+	}
+
+	.chart-container {
+		margin-top: 15px;
+	}
+
+	.period-chart-container {
+		margin-top: 15px;
+	}
+
+	.selectors-row {
+		gap: 10px;
 	}
 }

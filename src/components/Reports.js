@@ -1,32 +1,177 @@
 import React, { useState, useEffect } from "react";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { db } from "../firebase/config";
-import { format, subDays } from "date-fns";
+import { format, subDays, addDays, startOfWeek, endOfWeek } from "date-fns";
 import { ja } from "date-fns/locale";
+import {
+	LineChart,
+	Line,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	Tooltip,
+	Legend,
+	ResponsiveContainer,
+} from "recharts";
 import WeeklySummary from "./WeeklySummary";
-import MealHistory from "./MealHistory";
+import DailyReports from "./DailyReports";
 import "./Reports.css";
 
 const Reports = () => {
 	const [selectedPeriod, setSelectedPeriod] = useState("week");
-	const [reportData, setReportData] = useState([]);
+	const [chartData, setChartData] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [activeTab, setActiveTab] = useState("reports"); // 'reports', 'weekly', 'history'
+	const [activeTab, setActiveTab] = useState("reports"); // 'reports', 'weekly', 'daily'
+	const [selectedMetric, setSelectedMetric] = useState("weight");
 
 	const periods = [
 		{ value: "week", label: "1週間" },
 		{ value: "month", label: "1ヶ月" },
 		{ value: "3months", label: "3ヶ月" },
-		{ value: "6months", label: "半年" },
+		{ value: "6months", label: "6ヶ月" },
 		{ value: "year", label: "1年" },
 	];
 
-	useEffect(() => {
-		loadReportData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedPeriod]);
+	const metrics = [
+		{
+			value: "calories",
+			label: "摂取カロリー",
+			unit: "kcal",
+			color: "var(--colorYellow)",
+		},
+		{ value: "weight", label: "体重", unit: "kg", color: "var(--colorGreen)" },
+		{ value: "score", label: "点数", unit: "点", color: "var(--colorOrange)" },
+	];
 
-	const loadReportData = async () => {
+	useEffect(() => {
+		if (activeTab === "reports") {
+			loadChartData();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedPeriod, activeTab]);
+
+	const getTimeSpan = (period) => {
+		switch (period) {
+			case "week":
+			case "month":
+				return "daily"; // 1日単位
+			case "3months":
+				return "weekly"; // 1週間単位
+			case "6months":
+				return "biweekly"; // 2週間単位
+			case "year":
+				return "monthly"; // 4週間単位
+			default:
+				return "daily";
+		}
+	};
+
+	const groupDataByTimeSpan = (data, timeSpan) => {
+		if (timeSpan === "daily") {
+			return data;
+		}
+
+		const groupedData = [];
+		const sortedData = [...data].sort(
+			(a, b) => new Date(a.date) - new Date(b.date)
+		);
+
+		if (timeSpan === "weekly") {
+			// 週ごとにグループ化
+			let currentWeekData = [];
+			let currentWeekStart = null;
+
+			sortedData.forEach((item) => {
+				const itemDate = new Date(item.date);
+				const weekStart = startOfWeek(itemDate, { weekStartsOn: 1 }); // 月曜日開始
+
+				if (
+					!currentWeekStart ||
+					weekStart.getTime() !== currentWeekStart.getTime()
+				) {
+					if (currentWeekData.length > 0) {
+						groupedData.push(
+							aggregateWeekData(currentWeekData, currentWeekStart)
+						);
+					}
+					currentWeekData = [item];
+					currentWeekStart = weekStart;
+				} else {
+					currentWeekData.push(item);
+				}
+			});
+
+			if (currentWeekData.length > 0) {
+				groupedData.push(aggregateWeekData(currentWeekData, currentWeekStart));
+			}
+		} else if (timeSpan === "biweekly") {
+			// 2週間ごとにグループ化
+			for (let i = 0; i < sortedData.length; i += 14) {
+				const biweeklyData = sortedData.slice(i, i + 14);
+				if (biweeklyData.length > 0) {
+					groupedData.push(aggregatePeriodData(biweeklyData, "2週間"));
+				}
+			}
+		} else if (timeSpan === "monthly") {
+			// 4週間ごとにグループ化
+			for (let i = 0; i < sortedData.length; i += 28) {
+				const monthlyData = sortedData.slice(i, i + 28);
+				if (monthlyData.length > 0) {
+					groupedData.push(aggregatePeriodData(monthlyData, "4週間"));
+				}
+			}
+		}
+
+		return groupedData;
+	};
+
+	const aggregateWeekData = (weekData, weekStart) => {
+		const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
+		const totalCalories = weekData.reduce(
+			(sum, item) => sum + (item.calories || 0),
+			0
+		);
+		const avgWeight = calculateAverage(
+			weekData.map((item) => item.weight).filter((w) => w !== null)
+		);
+		const avgScore = calculateAverage(
+			weekData.map((item) => item.score).filter((s) => s > 0)
+		);
+
+		return {
+			date: format(weekStart, "M/d") + "-" + format(weekEnd, "M/d"),
+			calories: Math.round(totalCalories / weekData.length),
+			weight: avgWeight ? parseFloat(avgWeight.toFixed(1)) : null,
+			score: avgScore ? Math.round(avgScore) : null,
+		};
+	};
+
+	const aggregatePeriodData = (periodData, label) => {
+		const totalCalories = periodData.reduce(
+			(sum, item) => sum + (item.calories || 0),
+			0
+		);
+		const avgWeight = calculateAverage(
+			periodData.map((item) => item.weight).filter((w) => w !== null)
+		);
+		const avgScore = calculateAverage(
+			periodData.map((item) => item.score).filter((s) => s > 0)
+		);
+
+		return {
+			date: format(new Date(periodData[0].date), "M/d") + " ～",
+			calories: Math.round(totalCalories / periodData.length),
+			weight: avgWeight ? parseFloat(avgWeight.toFixed(1)) : null,
+			score: avgScore ? Math.round(avgScore) : null,
+		};
+	};
+
+	const calculateAverage = (values) => {
+		if (values.length === 0) return null;
+		return values.reduce((sum, val) => sum + val, 0) / values.length;
+	};
+
+	const loadChartData = async () => {
 		setLoading(true);
 		try {
 			const endDate = new Date();
@@ -61,7 +206,7 @@ const Reports = () => {
 				mealsRef,
 				where("date", ">=", startDateStr),
 				where("date", "<=", endDateStr),
-				orderBy("date", "desc")
+				orderBy("date", "asc")
 			);
 			const mealsSnapshot = await getDocs(mealsQuery);
 
@@ -71,7 +216,7 @@ const Reports = () => {
 				exercisesRef,
 				where("date", ">=", startDateStr),
 				where("date", "<=", endDateStr),
-				orderBy("date", "desc")
+				orderBy("date", "asc")
 			);
 			const exercisesSnapshot = await getDocs(exercisesQuery);
 
@@ -81,172 +226,138 @@ const Reports = () => {
 				weightsRef,
 				where("date", ">=", startDateStr),
 				where("date", "<=", endDateStr),
-				orderBy("date", "desc")
+				orderBy("date", "asc")
 			);
 			const weightsSnapshot = await getDocs(weightsQuery);
 
 			// データを日付ごとに整理
 			const dataByDate = {};
 
+			// 期間内のすべての日付を初期化
+			let currentDate = new Date(startDate);
+			while (currentDate <= endDate) {
+				const dateStr = format(currentDate, "yyyy-MM-dd");
+				dataByDate[dateStr] = {
+					date: dateStr,
+					calories: 0,
+					weight: null,
+					score: 0,
+				};
+				currentDate = addDays(currentDate, 1);
+			}
+
 			// 食事データを処理
 			mealsSnapshot.forEach((doc) => {
 				const meal = doc.data();
 				const date = meal.date;
-				if (!dataByDate[date]) {
-					dataByDate[date] = {
-						date,
-						nutrition: { calories: 0, protein: 0, fat: 0, carbohydrate: 0 },
-						exercise: { calories: 0 },
-						weight: null,
-					};
+				if (dataByDate[date]) {
+					dataByDate[date].calories += meal.calories || 0;
 				}
-				dataByDate[date].nutrition.calories += meal.calories || 0;
-				dataByDate[date].nutrition.protein += meal.protein || 0;
-				dataByDate[date].nutrition.fat += meal.fat || 0;
-				dataByDate[date].nutrition.carbohydrate += meal.carbohydrate || 0;
 			});
 
-			// 運動データを処理
+			// 運動データを処理（スコア計算に使用）
+			const exerciseByDate = {};
 			exercisesSnapshot.forEach((doc) => {
 				const exercise = doc.data();
 				const date = exercise.date;
-				if (!dataByDate[date]) {
-					dataByDate[date] = {
-						date,
-						nutrition: { calories: 0, protein: 0, fat: 0, carbohydrate: 0 },
-						exercise: { calories: 0 },
-						weight: null,
-					};
+				if (!exerciseByDate[date]) {
+					exerciseByDate[date] = { calories: 0 };
 				}
-				dataByDate[date].exercise.calories += exercise.calories || 0;
+				exerciseByDate[date].calories += exercise.calories || 0;
 			});
 
 			// 体重データを処理
 			weightsSnapshot.forEach((doc) => {
 				const weight = doc.data();
 				const date = weight.date;
-				if (!dataByDate[date]) {
-					dataByDate[date] = {
-						date,
-						nutrition: { calories: 0, protein: 0, fat: 0, carbohydrate: 0 },
-						exercise: { calories: 0 },
-						weight: null,
-					};
+				if (dataByDate[date]) {
+					dataByDate[date].weight = weight.weight;
 				}
-				dataByDate[date].weight = weight.weight;
 			});
 
-			// 配列に変換して日付順にソート
-			const sortedData = Object.values(dataByDate).sort(
-				(a, b) => new Date(b.date) - new Date(a.date)
-			);
+			// スコア計算
+			Object.keys(dataByDate).forEach((date) => {
+				const dayData = dataByDate[date];
+				const exercise = exerciseByDate[date] || { calories: 0 };
+				dayData.score = calculateScore(
+					{ calories: dayData.calories, protein: 0, fat: 0, carbohydrate: 0 },
+					exercise
+				);
+			});
 
-			setReportData(sortedData);
+			// 配列に変換してソート
+			const chartDataArray = Object.values(dataByDate).map((item) => ({
+				...item,
+				date: format(new Date(item.date), "M/d"),
+			}));
+
+			// 期間に応じてデータをグループ化
+			const timeSpan = getTimeSpan(selectedPeriod);
+			const groupedChartData = groupDataByTimeSpan(chartDataArray, timeSpan);
+
+			setChartData(groupedChartData);
 		} catch (error) {
-			console.error("Error loading report data:", error);
+			console.error("Error loading chart data:", error);
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	const calculateScore = (nutrition, exercise) => {
-		// 簡単なスコア計算（実際の目標値に基づいて調整が必要）
 		let score = 0;
 
 		// カロリー摂取（1500-2500kcalを理想とする）
 		if (nutrition.calories >= 1500 && nutrition.calories <= 2500) {
-			score += 25;
+			score += 50;
 		} else if (nutrition.calories >= 1200 && nutrition.calories <= 3000) {
-			score += 15;
+			score += 30;
 		} else {
-			score += 5;
+			score += 10;
 		}
 
 		// 運動（300kcal以上を理想とする）
 		if (exercise.calories >= 300) {
-			score += 25;
+			score += 50;
 		} else if (exercise.calories >= 150) {
-			score += 15;
+			score += 30;
 		} else {
-			score += 5;
-		}
-
-		// タンパク質（60g以上を理想とする）
-		if (nutrition.protein >= 60) {
-			score += 25;
-		} else if (nutrition.protein >= 40) {
-			score += 15;
-		} else {
-			score += 5;
-		}
-
-		// バランス（脂質と炭水化物のバランス）
-		const totalCarbs = nutrition.carbohydrate * 4;
-		const totalFat = nutrition.fat * 9;
-		const totalCalories = nutrition.calories;
-
-		if (totalCalories > 0) {
-			const carbRatio = totalCarbs / totalCalories;
-			const fatRatio = totalFat / totalCalories;
-
-			if (
-				carbRatio >= 0.4 &&
-				carbRatio <= 0.7 &&
-				fatRatio >= 0.2 &&
-				fatRatio <= 0.35
-			) {
-				score += 25;
-			} else if (
-				carbRatio >= 0.3 &&
-				carbRatio <= 0.8 &&
-				fatRatio >= 0.15 &&
-				fatRatio <= 0.4
-			) {
-				score += 15;
-			} else {
-				score += 5;
-			}
+			score += 10;
 		}
 
 		return Math.min(score, 100);
 	};
 
-	const getScoreColor = (score) => {
-		if (score >= 80) return "var(--colorGreen)";
-		if (score >= 60) return "var(--colorYellow)";
-		return "var(--colorRed)";
-	};
-
-	const getAverageWeight = () => {
-		const weights = reportData
-			.filter((d) => d.weight !== null)
-			.map((d) => d.weight);
-		if (weights.length === 0) return null;
-		return (
-			weights.reduce((sum, weight) => sum + weight, 0) / weights.length
-		).toFixed(1);
-	};
-
-	const getWeightChange = () => {
-		const weights = reportData
-			.filter((d) => d.weight !== null)
-			.map((d) => d.weight);
-		if (weights.length < 2) return null;
-
-		const change = weights[weights.length - 1] - weights[0];
-		return {
-			value: Math.abs(change),
-			isIncrease: change > 0,
-			isDecrease: change < 0,
-		};
-	};
-
-	const averageWeight = getAverageWeight();
-	const weightChange = getWeightChange();
-
 	const handleDateSelect = (date) => {
-		// 日付選択時の処理（必要に応じて実装）
 		console.log("Selected date:", date);
+	};
+
+	const getSelectedMetricInfo = () => {
+		return metrics.find((m) => m.value === selectedMetric);
+	};
+
+	const getWeightAxisDomain = () => {
+		if (selectedMetric !== "weight") return undefined;
+
+		// 体重データから最小値・最大値を取得
+		const weightValues = chartData
+			.map((item) => item.weight)
+			.filter(
+				(weight) => weight !== null && weight !== undefined && !isNaN(weight)
+			);
+
+		if (weightValues.length === 0) {
+			// データがない場合はデフォルトの範囲
+			return [50, 90];
+		}
+
+		const minWeight = Math.min(...weightValues);
+		const maxWeight = Math.max(...weightValues);
+
+		// プラスマイナス1kgの範囲で設定
+		return [
+			Math.max(minWeight - 1, 0), // 最小値は0以上
+			maxWeight + 1,
+		];
 	};
 
 	return (
@@ -268,21 +379,20 @@ const Reports = () => {
 					週間サマリー
 				</button>
 				<button
-					className={`tab-btn ${activeTab === "history" ? "active" : ""}`}
-					onClick={() => setActiveTab("history")}
+					className={`tab-btn ${activeTab === "daily" ? "active" : ""}`}
+					onClick={() => setActiveTab("daily")}
 				>
-					食事履歴
+					日別レポート
 				</button>
 			</div>
 
 			{/* タブコンテンツ */}
 			{activeTab === "reports" && (
-				<>
-					{/* 期間選択 */}
-					<div className="period-selector">
-						<label className="form-label">期間を選択</label>
+				<div className="period-reports">
+					{/* 期間と表示項目の選択 */}
+					<div className="selectors-row">
 						<select
-							className="form-control"
+							className="form-control selector-item"
 							value={selectedPeriod}
 							onChange={(e) => setSelectedPeriod(e.target.value)}
 						>
@@ -292,112 +402,47 @@ const Reports = () => {
 								</option>
 							))}
 						</select>
+
+						<select
+							className="form-control selector-item"
+							value={selectedMetric}
+							onChange={(e) => setSelectedMetric(e.target.value)}
+						>
+							{metrics.map((metric) => (
+								<option key={metric.value} value={metric.value}>
+									{metric.label}
+								</option>
+							))}
+						</select>
 					</div>
 
 					{loading ? (
 						<div className="loading">データを読み込み中...</div>
 					) : (
-						<>
-							{/* サマリー */}
-							<div className="report-summary">
-								<div className="summary-card">
-									<h3>期間サマリー</h3>
-									<div className="summary-stats">
-										<div className="stat-item">
-											<span className="stat-label">記録日数</span>
-											<span className="stat-value">{reportData.length} 日</span>
-										</div>
-										{averageWeight && (
-											<div className="stat-item">
-												<span className="stat-label">平均体重</span>
-												<span className="stat-value">{averageWeight} kg</span>
-											</div>
-										)}
-										{weightChange && (
-											<div className="stat-item">
-												<span className="stat-label">体重変化</span>
-												<span
-													className={`stat-value ${
-														weightChange.isIncrease ? "increase" : "decrease"
-													}`}
-												>
-													{weightChange.isIncrease ? "+" : "-"}
-													{weightChange.value.toFixed(1)} kg
-												</span>
-											</div>
-										)}
-									</div>
-								</div>
-							</div>
+						<div className="period-chart-container">
+							<ResponsiveContainer width="100%" height={400}>
+								<LineChart data={chartData}>
+									<CartesianGrid strokeDasharray="3 3" />
+									<XAxis dataKey="date" />
+									<YAxis domain={getWeightAxisDomain()} />
+									<Tooltip />
+									<Legend />
 
-							{/* 日別レポート */}
-							<div className="daily-reports">
-								<h3>日別レポート</h3>
-								{reportData.length === 0 ? (
-									<p className="no-data">この期間のデータがありません</p>
-								) : (
-									<div className="reports-list">
-										{reportData.map((dayData) => {
-											const score = calculateScore(
-												dayData.nutrition,
-												dayData.exercise
-											);
-											return (
-												<div key={dayData.date} className="report-item">
-													<div className="report-header">
-														<span className="report-date">
-															{format(new Date(dayData.date), "M/d", {
-																locale: ja,
-															})}
-														</span>
-														<div className="report-score">
-															<span
-																className="score-value"
-																style={{ color: getScoreColor(score) }}
-															>
-																{score}
-															</span>
-															<span className="score-unit">点</span>
-														</div>
-													</div>
-
-													<div className="report-details">
-														<div className="detail-item">
-															<span className="detail-label">摂取カロリー</span>
-															<span className="detail-value">
-																{dayData.nutrition.calories} kcal
-															</span>
-														</div>
-														<div className="detail-item">
-															<span className="detail-label">消費カロリー</span>
-															<span className="detail-value">
-																{dayData.exercise.calories} kcal
-															</span>
-														</div>
-														<div className="detail-item">
-															<span className="detail-label">タンパク質</span>
-															<span className="detail-value">
-																{dayData.nutrition.protein}g
-															</span>
-														</div>
-														{dayData.weight && (
-															<div className="detail-item">
-																<span className="detail-label">体重</span>
-																<span className="detail-value">
-																	{dayData.weight} kg
-																</span>
-															</div>
-														)}
-													</div>
-												</div>
-											);
-										})}
-									</div>
-								)}
-							</div>
-						</>
+									<Line
+										type="monotone"
+										dataKey={selectedMetric}
+										stroke={getSelectedMetricInfo().color}
+										strokeWidth={3}
+										name={`${getSelectedMetricInfo().label} (${
+											getSelectedMetricInfo().unit
+										})`}
+										connectNulls={selectedMetric !== "weight"}
+									/>
+								</LineChart>
+							</ResponsiveContainer>
+						</div>
 					)}
-				</>
+				</div>
 			)}
 
 			{activeTab === "weekly" && (
@@ -407,13 +452,7 @@ const Reports = () => {
 				/>
 			)}
 
-			{activeTab === "history" && (
-				<MealHistory
-					isOpen={true}
-					onClose={() => {}} // レポートページ内では閉じない
-					onDateSelect={handleDateSelect}
-				/>
-			)}
+			{activeTab === "daily" && <DailyReports />}
 		</div>
 	);
 };

@@ -80,7 +80,6 @@
 .chart-section {
 	background: var(--gray05);
 	border-radius: 12px;
-	padding: 20px;
 }
 
 .chart-section h4 {
@@ -255,7 +254,6 @@
 	}
 
 	.chart-container {
-		height: 150px;
 		gap: 5px;
 	}
 
