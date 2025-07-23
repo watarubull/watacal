@@ -128,6 +128,12 @@
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.pfc-item .wrap {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
 .pfc-label {
 	display: block;
 	font-size: 14px;
@@ -286,12 +292,6 @@
 }
 
 /* 食事リスト */
-.meals-list {
-	background: var(--white);
-	border-radius: 12px;
-	padding: 25px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
 
 .meals-list h3 {
 	margin-bottom: 20px;

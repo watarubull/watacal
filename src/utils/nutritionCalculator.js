@@ -67,16 +67,32 @@ export const calculatePFC = (
 	};
 };
 
-// 歩数から消費カロリー計算
+// 歩数から消費カロリー計算（METs方式）
 export const calculateWalkingCalories = (steps, weight) => {
-	// 1歩あたり約0.04kcal（体重60kgの場合）
-	const caloriesPerStep = (weight / 60) * 0.04;
-	return Math.round(steps * caloriesPerStep);
+	// 歩数から時間を算出
+	// 一般的な歩幅: 約70cm、歩行速度: 約4km/h（普通の速度）と仮定
+	const strideLength = 0.7; // メートル
+	const walkingSpeed = 4; // km/h
+	const distance = (steps * strideLength) / 1000; // km
+	const timeInHours = distance / walkingSpeed; // 時間
+
+	// METs値: 普通の速度の歩行（4〜5km/h）= 3.0
+	const mets = 3.0;
+
+	// 消費カロリー計算: METs × 体重（kg）× 時間（h）× 1.05
+	const calories = mets * weight * timeInHours * 1.05;
+	return Math.round(calories);
 };
 
-// 筋トレ時間から消費カロリー計算
+// 筋トレ時間から消費カロリー計算（METs方式）
 export const calculateStrengthCalories = (minutes, weight) => {
-	// 筋トレは1分あたり約6-8kcal（体重60kgの場合）
-	const caloriesPerMinute = (weight / 60) * 7;
-	return Math.round(minutes * caloriesPerMinute);
+	// 分から時間に変換
+	const timeInHours = minutes / 60;
+
+	// METs値: 中負荷の筋トレ（マシンやダンベル）= 4.5
+	const mets = 4.5;
+
+	// 消費カロリー計算: METs × 体重（kg）× 時間（h）× 1.05
+	const calories = mets * weight * timeInHours * 1.05;
+	return Math.round(calories);
 };

@@ -378,11 +378,13 @@ const NutritionTracker = () => {
 
 				<div className="pfc-grid">
 					<div className="pfc-item">
-						<span className="pfc-label">タンパク質</span>
-						<span className="pfc-value">
-							{todayNutrition.protein.toFixed(1)}g /{" "}
-							{targets.protein.toFixed(1)}g
-						</span>
+						<div className="wrap">
+							<span className="pfc-label">タンパク質</span>
+							<span className="pfc-value">
+								{todayNutrition.protein.toFixed(1)}g /{" "}
+								{targets.protein.toFixed(1)}g
+							</span>
+						</div>
 						<div className="pfc-progress">
 							<div
 								className="pfc-progress-fill"
@@ -403,10 +405,12 @@ const NutritionTracker = () => {
 					</div>
 
 					<div className="pfc-item">
-						<span className="pfc-label">脂質</span>
-						<span className="pfc-value">
-							{todayNutrition.fat.toFixed(1)}g / {targets.fat.toFixed(1)}g
-						</span>
+						<div className="wrap">
+							<span className="pfc-label">脂質</span>
+							<span className="pfc-value">
+								{todayNutrition.fat.toFixed(1)}g / {targets.fat.toFixed(1)}g
+							</span>
+						</div>
 						<div className="pfc-progress">
 							<div
 								className="pfc-progress-fill"
@@ -424,11 +428,13 @@ const NutritionTracker = () => {
 					</div>
 
 					<div className="pfc-item">
-						<span className="pfc-label">炭水化物</span>
-						<span className="pfc-value">
-							{todayNutrition.carbohydrate.toFixed(1)}g /{" "}
-							{targets.carbohydrate.toFixed(1)}g
-						</span>
+						<div className="wrap">
+							<span className="pfc-label">炭水化物</span>
+							<span className="pfc-value">
+								{todayNutrition.carbohydrate.toFixed(1)}g /{" "}
+								{targets.carbohydrate.toFixed(1)}g
+							</span>
+						</div>
 						<div className="pfc-progress">
 							<div
 								className="pfc-progress-fill"

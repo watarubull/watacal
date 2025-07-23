@@ -11,3 +11,22 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
 }
+
+/* iPhone での入力時拡大を防ぐ追加対策 */
+input,
+textarea,
+select {
+	font-size: 16px !important;
+	-webkit-appearance: none;
+	border-radius: 0;
+}
+
+/* iPhone Safari での追加対策 */
+@supports (-webkit-touch-callout: none) {
+	input,
+	textarea,
+	select {
+		font-size: 16px !important;
+		zoom: 1;
+	}
+}

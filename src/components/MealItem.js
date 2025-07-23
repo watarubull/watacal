@@ -8,10 +8,12 @@ const MealItem = ({ meal, onEdit, onDelete }) => {
 				<div className="meal-main">
 					<div className="meal-header">
 						<span className="meal-name">{meal.foodName}</span>
-						<span className="meal-amount">{meal.amount}g</span>
 					</div>
 					<div className="meal-nutrition">
-						<span className="nutrition-calories">{meal.calories} kcal</span>
+						<div className="wrap">
+							<span className="amount">{meal.amount}g</span>/
+							<span className="nutrition-calories">{meal.calories} kcal</span>
+						</div>
 						<div className="nutrition-pfc">
 							<span className="pfc-items">P: {meal.protein.toFixed(1)}g</span>
 							<span className="pfc-items">F: {meal.fat.toFixed(1)}g</span>
