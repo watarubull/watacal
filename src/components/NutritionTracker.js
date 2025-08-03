@@ -51,8 +51,6 @@ const NutritionTracker = () => {
 		format(new Date(), "yyyy-MM-dd")
 	);
 
-	const today = format(new Date(), "yyyy-MM-dd");
-
 	useEffect(() => {
 		loadTargets();
 		loadMealsForDate(selectedDate);
@@ -174,7 +172,7 @@ const NutritionTracker = () => {
 				foodName: selectedFood.name,
 				amount: parseFloat(foodAmount),
 				...nutrition,
-				date: today,
+				date: selectedDate, // 選択された日付を使用
 				createdAt: new Date(),
 			};
 

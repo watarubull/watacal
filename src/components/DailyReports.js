@@ -138,7 +138,42 @@ const DailyReports = () => {
 				(a, b) => new Date(b.date) - new Date(a.date)
 			);
 
-			setReportData(sortedData);
+			// 各日について過去7日間の平均体重を計算
+			const enhancedData = sortedData.map((dayData) => {
+				const currentDate = new Date(dayData.date);
+				const weightsForAverage = [];
+
+				// その日を含む過去7日間の体重データを収集
+				for (let i = 0; i < 7; i++) {
+					const targetDate = subDays(currentDate, i);
+					const targetDateStr = format(targetDate, "yyyy-MM-dd");
+
+					// 該当日の体重データを探す
+					weightsSnapshot.forEach((doc) => {
+						const weight = doc.data();
+						if (weight.date === targetDateStr && weight.weight) {
+							weightsForAverage.push(weight.weight);
+						}
+					});
+				}
+
+				// 平均体重を計算
+				let averageWeight = null;
+				if (weightsForAverage.length > 0) {
+					const sum = weightsForAverage.reduce(
+						(acc, weight) => acc + weight,
+						0
+					);
+					averageWeight = (sum / weightsForAverage.length).toFixed(1);
+				}
+
+				return {
+					...dayData,
+					averageWeight,
+				};
+			});
+
+			setReportData(enhancedData);
 		} catch (error) {
 			console.error("Error loading report data:", error);
 		} finally {
@@ -310,7 +345,7 @@ const DailyReports = () => {
 												<div className="detail-item">
 													<span className="detail-label">タンパク質</span>
 													<span className="detail-value">
-														{dayData.nutrition.protein}g
+														{dayData.nutrition.protein.toFixed(1)}g
 													</span>
 												</div>
 												{dayData.weight && (
@@ -318,6 +353,14 @@ const DailyReports = () => {
 														<span className="detail-label">体重</span>
 														<span className="detail-value">
 															{dayData.weight} kg
+														</span>
+													</div>
+												)}
+												{dayData.averageWeight && (
+													<div className="detail-item">
+														<span className="detail-label">7日間平均体重</span>
+														<span className="detail-value">
+															{dayData.averageWeight} kg
 														</span>
 													</div>
 												)}

@@ -40,7 +40,6 @@ const Reports = () => {
 			color: "var(--colorYellow)",
 		},
 		{ value: "weight", label: "体重", unit: "kg", color: "var(--colorGreen)" },
-		{ value: "score", label: "点数", unit: "点", color: "var(--colorOrange)" },
 	];
 
 	useEffect(() => {

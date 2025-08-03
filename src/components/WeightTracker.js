@@ -156,10 +156,6 @@ const WeightTracker = () => {
 				</button>
 			</div>
 
-			<p className="date-display">
-				{format(new Date(selectedDate), "M月d日 (E)", { locale: ja })}
-			</p>
-
 			{/* 今日の体重 */}
 			<div className="today-weight">
 				<div className="weight-card">

@@ -16,7 +16,6 @@ import {
 	calculateStrengthCalories,
 } from "../utils/nutritionCalculator";
 import { format } from "date-fns";
-import { ja } from "date-fns/locale";
 import "./ExerciseTracker.css";
 
 const ExerciseTracker = () => {
@@ -248,10 +247,6 @@ const ExerciseTracker = () => {
 					＞
 				</button>
 			</div>
-
-			<p className="date-display">
-				{format(new Date(selectedDate), "M月d日 (E)", { locale: ja })}
-			</p>
 
 			{/* 運動サマリー */}
 			<div className="exercise-summary">

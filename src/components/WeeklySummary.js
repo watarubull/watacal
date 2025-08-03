@@ -21,8 +21,8 @@ const WeeklySummary = ({ isOpen, onClose }) => {
 			const today = new Date();
 			const weeklyData = [];
 
-			// 過去7日間のデータを取得
-			for (let i = 6; i >= 0; i--) {
+			// 前日までの7日間のデータを取得
+			for (let i = 7; i >= 1; i--) {
 				const date = subDays(today, i);
 				const dateStr = format(date, "yyyy-MM-dd");
 
